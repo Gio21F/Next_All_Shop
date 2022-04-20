@@ -11,7 +11,7 @@ yarn dev
 
 MongoDB URL local:
 ```
-mongodb://localhost:27017/jira
+mongodb://localhost:27017/allShop
 ```
 
 ## Config Environment Variables

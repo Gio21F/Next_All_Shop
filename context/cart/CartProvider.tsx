@@ -30,6 +30,7 @@ export const CartProvider:FC = ({ children }) => {
     useEffect(() => {
         try {
             const cookieProducts = Cookie.get('cart') ? JSON.parse( Cookie.get('cart')! ): []
+            console.log(cookieProducts);
             dispatch({ type: '[Cart] - LoadCart from cookies | storage', payload: cookieProducts });
         } catch (error) {
             dispatch({ type: '[Cart] - LoadCart from cookies | storage', payload: [] });
@@ -38,7 +39,6 @@ export const CartProvider:FC = ({ children }) => {
     
     
     useEffect(() => {
-        Cookie.set('putamadre', "Me la pelaas");
       Cookie.set('cart', JSON.stringify( state.cart ));
     }, [state.cart]);
 

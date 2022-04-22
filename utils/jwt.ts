@@ -19,6 +19,8 @@ export const isValidToken = ( token: string ):Promise<string> => {
         throw new Error('No hay semilla de JWT - Revisar variables de entorno');
     }
 
+    if (token.length <= 10) return Promise.reject('Token no válido');
+
     return new Promise( (resolve, reject) => {
 
         try {

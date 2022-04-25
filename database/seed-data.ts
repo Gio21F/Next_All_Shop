@@ -16,7 +16,7 @@ interface SeedUser {
     name: string;
     email: string;
     password: string;
-    avatar?: string;
+    image?: string;
     role: 'admin'|'client';
 }
 
@@ -35,14 +35,14 @@ export const initialData: SeedData = {
             name: 'Giovani',
             email: 'gio@gmail.com',
             password: bcrypt.hashSync('12345678'),
-            avatar: 'https://i.pravatar.cc/300?img=1',
+            image: 'https://i.pravatar.cc/300?img=1',
             role: 'admin'
         },
         {
             name: 'Rafael',
             email: 'rafa@gmail.com',
             password: bcrypt.hashSync('12345678'),
-            avatar: 'https://i.pravatar.cc/300?img=1',
+            image: 'https://i.pravatar.cc/300?img=1',
             role: 'client'
         },
     ],

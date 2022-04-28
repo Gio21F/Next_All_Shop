@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import Head from 'next/head';
 
 import { Navbar, SideMenu } from '../ui';
@@ -6,7 +6,7 @@ import { Navbar, SideMenu } from '../ui';
 
 interface Props {
     title: string;
-    children: React.ReactNode;
+    children: ReactNode;
     pageDescription: string;
     imageFullUrl?: string;
 }

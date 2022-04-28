@@ -1,4 +1,4 @@
-import { FC, useEffect, useReducer } from 'react';
+import { FC, useEffect, useReducer, ReactNode } from 'react';
 import Cookie from 'js-cookie';
 
 import { ICartProduct, IOrder } from '../../interfaces';
@@ -6,6 +6,9 @@ import { CartContext, cartReducer } from './';
 import axios from 'axios';
 import { shopApi } from '../../api';
 
+interface Props {
+    children: ReactNode
+}
 export interface CartState {
     isLoaded: boolean;
     cart: ICartProduct[];
@@ -39,7 +42,7 @@ const CART_INITIAL_STATE: CartState = {
 }
 
 
-export const CartProvider:FC = ({ children }) => {
+export const CartProvider:FC<Props> = ({ children }) => {
 
     const [state, dispatch] = useReducer( cartReducer , CART_INITIAL_STATE );
 

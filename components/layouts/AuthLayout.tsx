@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import { ReactNode } from 'react';
 import Head from 'next/head';
 import { Box } from '@mui/material';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
 }
 

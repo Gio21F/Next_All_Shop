@@ -132,7 +132,7 @@ export const SideMenu = () => {
                     {/* Si es administrador */}
 
                     {
-                        user?.role === 'admin' && (
+                        (user?.role === 'admin' || user?.role === 'SEO' )  && (
                             <>
                                 {/* Admin */}
                                 <Divider />

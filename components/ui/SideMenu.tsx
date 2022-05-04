@@ -166,18 +166,20 @@ export const SideMenu = () => {
                                     </ListItemIcon>
                                     <ListItemText primary={'Ordenes'} />
                                 </ListItem>
-
-                                <ListItem 
-                                    button
-                                    onClick={ () => navigateTo('/admin/users') }
-                                >
-                                    <ListItemIcon>
-                                        <AdminPanelSettings/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={'Usuarios'} />
-                                </ListItem>
-
                             </>
+                        )  
+                    }
+                    {
+                        user?.role === 'SEO' && (
+                            <ListItem 
+                                button
+                                onClick={ () => navigateTo('/admin/users') }
+                            >
+                                <ListItemIcon>
+                                    <AdminPanelSettings/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Usuarios'} />
+                            </ListItem>
                         )
                     }
                 </List>

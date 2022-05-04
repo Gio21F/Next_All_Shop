@@ -9,6 +9,7 @@ import { AuthProvider, CartProvider, UiProvider } from '../context';
 
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { SnackbarProvider } from 'notistack';
+import NextNProgress from "nextjs-progressbar";
 
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
@@ -27,6 +28,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 <UiProvider>
                   <ThemeProvider theme={ lightTheme }>
                       <CssBaseline />
+                      <NextNProgress
+                        color="#3A64D8"
+                        startPosition={0.3}
+                        stopDelayMs={200}
+                        height={4}
+                        showOnShallow={true}
+                      />
                       <Component {...pageProps} />
                   </ThemeProvider>
                 </UiProvider>

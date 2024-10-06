@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import Head from 'next/head';
-import { Box } from '@mui/material';
+import { UiContext } from '@/context';
 
 interface Props {
   children: ReactNode;
@@ -8,16 +8,15 @@ interface Props {
 }
 
 export const AuthLayout = ({ children, title  }:Props) => {
+  const { theme } = useContext(UiContext)
   return (
     <>
         <Head>
             <title>{ title }</title>
         </Head>
 
-        <main>
-            <Box display='flex' justifyContent='center' alignItems='center' height="calc(100vh - 200px)">   
-                { children }
-            </Box>
+        <main className={`${ theme } w-full h-screen bg-white dark:bg-zinc-900`}>
+          { children }
         </main>
     
     </>

@@ -1,7 +1,5 @@
-import { FC, useMemo, useState } from 'react';
-import NextLink from 'next/link';
-import { Grid, Card, CardActionArea, CardMedia, Box, Typography, Link, Chip } from '@mui/material'
-
+import { FC, SyntheticEvent, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { IProduct } from '../../interfaces'
 
 interface Props {
@@ -12,52 +10,57 @@ export const ProductCard = ({ product }:Props) => {
 
     const [isHovered, setIsHovered] = useState(false);
     const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const [ errorImage, setErrorImage ] = useState(false);
+    const existImages = product.images.length > 0;
 
     const productImage = useMemo(() => {
-        return isHovered
-          ? product.images[1]
-          : product.images[0] 
-
+        if (product.images.length === 0) {
+            return './noImage.jpg'; // No hay imágenes
+        } else if (product.images.length === 1) {
+            return product.images[0]; // Solo una imagen
+        } else {
+            return isHovered ? product.images[1] : product.images[0]; // Más de una imagen
+        }
     }, [isHovered, product.images])
-
     return (
-      <Grid item 
-            xs={6} 
-            sm={ 4 }
-            onMouseEnter={ () => setIsHovered(true) } 
-            onMouseLeave={ () => setIsHovered(false) } 
+      <div
+        className='shadow-md dark:shadow-white/15 rounded-lg h-[350px]'
+        onMouseEnter={ () => setIsHovered(true) } 
+        onMouseLeave={ () => setIsHovered(false) }
       >
-          <Card>
-              <NextLink href={`/product/${product.slug}`} passHref prefetch={ false }>
-                <Link>
-                    <CardActionArea>
+            <div>
+                <Link href={`/product/${product.slug}`} passHref prefetch={ false }>
+                    <div className='relative'>
                         {
-                            product.inStock === 0 && (
-                                <Chip 
-                                    color="primary" 
-                                    label="No hay disponibles" 
-                                    sx={{ position: 'absolute', zIndex: 1, top: 10, left: 10 }}
-                                />
+                            product.stock === 0 && (
+                                <div className='p-2 rounded-full text-white bg-black z-10 absolute top-2 left-2'>
+                                    <p>No hay disponibles</p>
+                                </div>
                             )
                         }
-                        <CardMedia 
-                            component='img'
-                            className='fadeIn'
-                            image={ productImage }
+                        <img   
+                            className='fadeIn rounded-tl-lg rounded-tr-lg w-full h-72 object-cover'
+                            src={productImage}
                             alt={ product.title }
-                            onLoad={ () => setIsImageLoaded(true) }
+                            onLoad={ () => {
+                                setIsImageLoaded(true);
+                                setErrorImage(false);
+                            }}
+                            onError={(e: SyntheticEvent<HTMLImageElement>) => {
+                                if (!errorImage) { // Verifica que no haya un error de imagen anterior
+                                    setErrorImage(true);
+                                    (e.target as HTMLImageElement).src = '/noImage.jpg';
+                                }
+                            }}
                         />
-
-                    </CardActionArea>
+                    </div>
                 </Link>
-              </NextLink>
-              
-          </Card>
+            </div>
 
-          <Box sx={{ mt: 1, display: isImageLoaded ? 'block' : 'none' }} className='fadeIn'>
-              <Typography fontWeight={700}>{ product.title }</Typography>
-              <Typography fontWeight={500}>{ `$${product.price}` }</Typography>
-          </Box>
-      </Grid>
+        <div style={{ display: isImageLoaded ? 'block' : 'none' }} className='fadeIn flex flex-col px-3 py-2'>
+            <p className='font-semibold text-md text-black dark:text-white truncate'>{ product.title }</p>
+            <p className='text-md text-black dark:text-white'>{ `$${product.price}` }</p>
+        </div>
+        </div>
     )
 }

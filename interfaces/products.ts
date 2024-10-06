@@ -1,19 +1,19 @@
 export interface IProduct {
-    _id: string;
+    id?: string;
+    title: string;
+    slug: string;
     description: string;
-    images: string[];
-    inStock: number;
+    stock: number;
     price: number;
     sizes: ISize[];
-    slug: string;
+    images: string[];
     tags: string[];
-    title: string;
     type: IType;
     gender: 'men'|'women'|'kid'|'unisex'
 
     // TODO: agregar createdAt y updatedAt
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 
 }
 

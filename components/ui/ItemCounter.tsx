@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
+import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 
 
 interface Props {
@@ -27,14 +26,14 @@ export const ItemCounter:FC<Props> = ({ currentValue, updatedQuantity, maxValue 
   
 
   return (
-    <Box display='flex' alignItems='center'>
-        <IconButton onClick={ () => addOrRemove(-1) }>
-            <RemoveCircleOutline />
-        </IconButton>
-        <Typography sx={{ width: 40, textAlign:'center' }}> {currentValue} </Typography>
-        <IconButton onClick={ () => addOrRemove(+1) }>
-            <AddCircleOutline />
-        </IconButton>
-    </Box>
+    <div className='flex my-2'>
+        <button className='w-6' onClick={ () => addOrRemove(-1) }>
+            <MinusCircleIcon className='text-black dark:text-white' />
+        </button>
+        <p className='w-16 flex justify-center text-black dark:text-white'> {currentValue} </p>
+        <button className='w-6' onClick={ () => addOrRemove(+1) }>
+            <PlusCircleIcon className='text-black dark:text-white' />
+        </button>
+    </div>
   )
 }

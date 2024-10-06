@@ -1,15 +1,15 @@
 import { UiState } from './';
 
 type UiActionType = 
-   | { type: '[UI] - ToggleMenu' } 
+   | { type: '[UI] - ToggleTheme', payload: string }
 
 export const uiReducer = ( state: UiState, action: UiActionType ): UiState => {
 
    switch (action.type) {
-      case '[UI] - ToggleMenu':
+      case '[UI] - ToggleTheme':
          return {
             ...state,
-            isMenuOpen: !state.isMenuOpen
+            theme: action.payload
         }
 
        default:

@@ -1,104 +1,83 @@
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
-import { AccessTimeOutlined, AttachMoneyOutlined, CancelPresentationOutlined, CategoryOutlined, CreditCardOffOutlined, CreditCardOutlined, DashboardOutlined, GroupOutlined, ProductionQuantityLimitsOutlined } from '@mui/icons-material'
-import { Grid, Typography } from '@mui/material'
-
-import { SummaryTile } from '../../components/admin'
 import { AdminLayout } from '../../components/layouts/AdminLayout'
 import { DashboardSummaryResponse } from '../../interfaces'
+import { shopApi } from '@/api'
+import { SummaryTile } from '@/components/admin'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChartSimple, faClock, faCreditCard, faUsers } from '@fortawesome/free-solid-svg-icons'
 
 const DashboardPage = () => {
-    const { data, error } = useSWR<DashboardSummaryResponse>('/api/admin/dashboard', {
-        refreshInterval: 30 * 1000 // 30 segundos
-    });
-
+    
+    const fetcher = (url: string) => shopApi.get(url).then(res => res.data);
+    const { data, error, isLoading } = useSWR<DashboardSummaryResponse>(
+        '/products/admin/dashboard',
+        fetcher
+    );
     const [refreshIn, setRefreshIn] = useState(30);
 
     useEffect(() => {
         const interval = setInterval(()=>{
-          console.log('Tick');
-          setRefreshIn( refreshIn => refreshIn > 0 ? refreshIn - 1: 30 );
+          setRefreshIn( refreshIn => refreshIn > 0 ? refreshIn - 1 : 30 );
         }, 1000 );
       
         return () => clearInterval(interval)
       }, []);
 
-    if ( !error && !data ) {
-        return <></>
-    }
+    // if ( !error && !data ) {
+    //     return <></>
+    // }
 
-    if ( error ){
-        console.log(error);
-        return <Typography>Error al cargar la información</Typography>
-    }
-
+    // if ( error ){
+    //     console.log(error);
+    //     return <Typography>Error al cargar la información</Typography>
+    // }
+    if ( !data && !error ) return (
+        <AdminLayout 
+        title={`Error`} 
+        subTitle={'Algo salio mal'}
+    ><></></AdminLayout>
+    );
     const {
         numberOfOrders,
-        paidOrders,
         numberOfClients,
         numberOfProducts,
-        productsWithNoInventory,
-        lowInventory,
-        notPaidOrders,
     } = data!;
-
     return (
         <AdminLayout
             title='Dashboard'
             subTitle='Estadísticas generales'
-            icon={<DashboardOutlined />}
         >
-            <Grid container spacing={2}>
+            asdas
+            <div className='h-screen'>
+                <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
 
-                <SummaryTile 
-                    title={ numberOfOrders }
-                    subTitle="Ordenes totales"
-                    icon={ <CreditCardOutlined color="secondary" sx={{ fontSize: 40 }} /> }
-                />
+                    <SummaryTile 
+                        title="Ordenes totales"
+                        subTitle={ numberOfOrders }
+                        icon={ <FontAwesomeIcon icon={faCreditCard} className="fa-2x mx-2 text-purple-500" /> }
+                    />
 
-                <SummaryTile 
-                    title={ paidOrders }
-                    subTitle="Ordenes pagadas"
-                    icon={ <AttachMoneyOutlined color="success" sx={{ fontSize: 40 }} /> }
-                />
+                    <SummaryTile 
+                        title="Clientes"
+                        subTitle={ numberOfClients }
+                        icon={ <FontAwesomeIcon icon={faUsers} className="fa-2x mx-2 text-indigo-500" /> }
+                    />
 
-                <SummaryTile 
-                    title={ notPaidOrders }
-                    subTitle="Ordenes pendientes"
-                    icon={ <CreditCardOffOutlined color="error" sx={{ fontSize: 40 }} /> }
-                />
+                    <SummaryTile 
+                        title="Productos"
+                        subTitle={ numberOfProducts }
+                        icon={ <FontAwesomeIcon icon={faChartSimple} className="fa-2x mx-2 text-pink-500" /> }
+                    />
 
-                <SummaryTile 
-                    title={ numberOfClients }
-                    subTitle="Clientes"
-                    icon={ <GroupOutlined color="primary" sx={{ fontSize: 40 }} /> }
-                />
+                    <SummaryTile 
+                        title="Actualización en:"
+                        subTitle={ refreshIn }
+                        icon={ <FontAwesomeIcon icon={faClock} className="fa-2x mx-2 text-purple-500" /> }
+                    />
 
-                <SummaryTile 
-                    title={ numberOfProducts }
-                    subTitle="Productos"
-                    icon={ <CategoryOutlined color="warning" sx={{ fontSize: 40 }} /> }
-                />
-
-                <SummaryTile 
-                    title={ productsWithNoInventory }
-                    subTitle="Sin existencias"
-                    icon={ <CancelPresentationOutlined color="error" sx={{ fontSize: 40 }} /> }
-                />
-
-                <SummaryTile 
-                    title={ lowInventory }
-                    subTitle="Bajo inventario"
-                    icon={ <ProductionQuantityLimitsOutlined color="warning" sx={{ fontSize: 40 }} /> }
-                />
-
-                <SummaryTile 
-                    title={ refreshIn }
-                    subTitle="Actualización en:"
-                    icon={ <AccessTimeOutlined color="secondary" sx={{ fontSize: 40 }} /> }
-                />
-
-            </Grid>
+                </div>
+            </div>
 
         </AdminLayout>
     )

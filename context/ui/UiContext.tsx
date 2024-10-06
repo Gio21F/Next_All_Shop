@@ -2,10 +2,9 @@ import { createContext } from 'react';
 
 
 interface ContextProps {
-    isMenuOpen: boolean;
-
+    theme: string;
     // Methods
-    toggleSideMenu: () => void;
+    toggleTheme: () => void;
 }
 
 

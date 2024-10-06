@@ -3,11 +3,12 @@ import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/react'
 
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { AuthContext, authReducer } from './';
 import { shopApi } from '../../api';
 import { IUser } from '../../interfaces';
+import axiosInstance from '../../utils/axios';
 
 interface Props {
     children: ReactNode
@@ -30,7 +31,13 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+            if(data.user?.token){
+                localStorage.setItem('token', data.user.token);
+                dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+            }
+            else {
+                dispatch({ type: '[Auth] - Logout' })
+            }
         }
     }, [data, status]);
 
@@ -40,9 +47,10 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     // }, [])
 
     const checkToken = async() => {
+        console.log('Checking token');
         if ( !Cookies.get('token') ) return;
         try {
-            const { data } = await shopApi.get('/user/validate-token');
+            const { data } = await axiosInstance.get('/auth/check-status');
             const { token, user } = data;
             Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
@@ -51,25 +59,28 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         }
     }
 
-    const loginUser = async( email: string, password: string ): Promise<boolean> => {
+    const loginUser = async( email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
 
         try {
-            const { data } = await shopApi.post('/user/login', { email, password });
-            const { token, user } = data;
-            Cookies.set('token', token );
+            const { data } = await axiosInstance.post('/auth/login', { email, password });
+            const { user } = data;
+            // Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
-            return true;
-        } catch (error) {
-            return false;
+            return { hasError: false }
+        } catch (error: any ) {
+            if (error.response.status === 400){
+                return { hasError: true, message: error.response.data.message[0] };
+            }
+            return { hasError: true, message: error.response.data.message};
         }
 
     }
 
-    const registerUser = async( name: string, email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
+    const registerUser = async( fullname: string, email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
         try {
-            const { data } = await shopApi.post('/user/register', { name, email, password });
+            const { data } = await axiosInstance.post('/auth/register', { fullname, email, password });
             const { token, user } = data;
-            Cookies.set('token', token );
+            // Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
             return {
                 hasError: false
@@ -101,6 +112,7 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         Cookies.remove('country')
         Cookies.remove('phone')
         signOut();
+        localStorage.removeItem('token');
         dispatch({ type: '[Auth] - Logout' });
         // Para nuestra autenticacion personalizada
         // Cookies.remove('token');

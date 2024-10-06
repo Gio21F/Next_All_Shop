@@ -1,13 +1,8 @@
 import type { NextPage, GetServerSideProps } from 'next';
-import { Typography,Box } from '@mui/material';
-
 import { ShopLayout } from '../../components/layouts';
-
 import { ProductList } from '../../components/products';
-
-import { dbProducts } from '../../database';
 import { IProduct } from '../../interfaces';
-
+import { shopApi } from '@/api';
 
 interface Props {
     products: IProduct[];
@@ -17,28 +12,21 @@ interface Props {
 
 
 const SearchPage: NextPage<Props> = ({ products, foundProducts, query }) => {
-
-
   return (
-    <ShopLayout title={'All-Shop - Search'} pageDescription={'Encuentra los mejores productos de Teslo aquí'}>
-        <Typography variant='h1' component='h1'>Buscar productos</Typography>
+    <ShopLayout 
+        title={'All-Shop - Search'} 
+        pageDescription={'Encuentra los mejores productos de Teslo aquí'}
+    >
 
-        {
-            foundProducts 
-                ? <Typography variant='h2' sx={{ mb: 1 }} textTransform="capitalize">Término: { query }</Typography>
-                : (
-                    <Box display='flex'>
-                        <Typography variant='h2' sx={{ mb: 1 }}>No encontramos ningún produto</Typography>
-                        <Typography variant='h2' sx={{ ml: 1 }} color="secondary" textTransform="capitalize">{ query }</Typography>
-                    </Box>
-                )
-        }
-
-        
-
-        
-        <ProductList products={ products } />
-        
+        <div className='text-black dark:text-white'>
+            <h1 className='text-3xl font-semibold'>Buscar productos</h1>
+            {
+                foundProducts 
+                    ? <h2 className='text-xl flex mb-3'>Término: <p className='text-indigo-600 ml-2'>{ query }</p></h2>
+                    : <h2 className='text-xl flex mb-3 lg:w-[600px] w-auto'>No encontramos ningun producto, pero aquí tienes otros productos que te pueden interesar!</h2>
+            }
+            <ProductList products={ products } />
+        </div>
     </ShopLayout>
   )
 }
@@ -60,14 +48,19 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         }
     }
 
-    // y no hay productos
-    let products = await dbProducts.getProductsByTerm( query );
+    let products: IProduct[];
+    try {
+        const { data } = await shopApi.get(`/products/search/${query}`);
+        products = data;
+    } catch (error) {
+        products = [];
+    }
     const foundProducts = products.length > 0;
-
     // TODO: retornar otros productos
     if ( !foundProducts ) {
-        // products = await dbProducts.getAllProducts(); 
-        products = await dbProducts.getProductsByTerm('shirt');
+        const response = await shopApi.get('/products/search/shirt');
+        console.log(response);
+        products = response.data
     }
 
     return {

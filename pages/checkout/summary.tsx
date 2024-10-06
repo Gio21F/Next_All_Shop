@@ -1,42 +1,38 @@
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-
-import { Link, Box, Button, Card, CardContent, Divider, Grid, Typography, Chip } from '@mui/material';
-
 import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
-// import { countries } from '../../utils';
 
 const SummaryPage = () => {
 
     const router = useRouter()
-    const { shippingAddress, numberOfItems, createOrder } = useContext( CartContext );
+    const { shippingAddress, numberOfItems } = useContext( CartContext );
 
     const [isPosting, setIsPosting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
+    
     useEffect(() => {
         if ( !Cookies.get('firstName') ) {
             router.push('/checkout/address');
         }
     }, [ router ]);
 
-    const onCreateOrder = async() => {
-        setIsPosting(true);
+    // const onCreateOrder = async() => {
+    //     setIsPosting(true);
         
-        const { hasError, message } = await createOrder(); 
+    //     const { hasError, message } = await createOrder(); 
 
-        if ( hasError ) {
-            setIsPosting(false);
-            setErrorMessage( message );
-            return;
-        }
+    //     if ( hasError ) {
+    //         setIsPosting(false);
+    //         setErrorMessage( message );
+    //         return;
+    //     }
 
-        router.replace(`/orders/${ message }`);
-    }
+    //     router.replace(`/orders/${ message }`);
+    // }
 
     if ( !shippingAddress ) {
         return <></>;
@@ -50,72 +46,52 @@ const SummaryPage = () => {
     {
         (numberOfItems === 0) 
             ? (
-                <Box display='flex' flexDirection='column' alignItems='center'>
-                    <Typography variant='h5' component='h5'>No se puede generar una orden sin productos. Agregue productos a su carrito</Typography>
-                    <NextLink href='/' passHref>
-                        <Link typography="h4" color='secondary'>
+                <div className='flex justify-center flex-col w-full h-screen'>
+                    <h5 className='dark:text-white text-xl text-center'>No se puede generar una orden sin productos. Agregue productos a su carrito</h5>
+                    <Link href='/' passHref>
+                        <p className='pt-4 text-indigo-600 text-2xl text-center'>
                             Regresar
-                        </Link>
-                    </NextLink>
-                </Box>
+                        </p>
+                    </Link>
+                </div>
                 )
             : (
                 <>
-                    <Typography variant='h1' component='h1'>Resumen de la orden</Typography>
-                    <Grid container>
-                        <Grid item xs={ 12 } sm={ 7 }>
+                    <h1 className='mb-5 font-semibold text-4xl text-black dark:text-white'>Resumen de la orden</h1>
+                    <div className='grid lg:grid-cols-2 grid-cols-1 gap-4 text-black dark:text-white'>
+                        <div className='h-[400px] lg:h-[600px] overflow-y-auto'>
                             <CartList />
-                        </Grid>
-                        <Grid item xs={ 12 } sm={ 5 }>
-                            <Card className='summary-card'>
-                                <CardContent>
-                                    <Typography variant='h2'>Resumen ({numberOfItems} { numberOfItems === 1 ? 'producto':'productos' })</Typography>
-                                    <Divider sx={{ my:1 }} />
+                        </div>
+                        <div className='summary-card dark:shadow-sm dark:shadow-white/80 p-4 rounded-md lg:h-[470px] h-auto'>
+                            <h2 className='text-3xl mb-2'>Resumen ({numberOfItems} { numberOfItems === 1 ? 'producto':'productos' })</h2>
+                            <hr />
+                            <div className='flex justify-between my-2'>
+                                <h3 className='text-md'>Dirección de entrega</h3>
+                                <Link href='/checkout/address' passHref>
+                                    <p className='text-indigo-600 underline'>Editar</p>
+                                </Link>
+                            </div>
 
-                                    <Box display='flex' justifyContent='space-between'>
-                                        <Typography variant='subtitle1'>Dirección de entrega</Typography>
-                                        <NextLink href='/checkout/address' passHref>
-                                            <Link underline='always'>
-                                                Editar
-                                            </Link>
-                                        </NextLink>
-                                    </Box>
-
-                                    
-                                    <Typography>{ firstName } { lastName }</Typography>
-                                    <Typography>{ address }{ address2 ? `, ${address2}` : ''  } </Typography>
-                                    <Typography>{ city }, { zip }</Typography>
-                                    {/* <Typography>{ countries.find( c => c.code === country )?.name }</Typography> */}
-                                    <Typography>{ country }</Typography>
-                                    <Typography>{ phone }</Typography>
-
-                                    <Divider sx={{ my:1 }} />
-
-                                    <OrderSummary />
-
-                                    <Box sx={{ mt: 3 }} display="flex" flexDirection="column">
-                                        <Button
-                                            onClick={ onCreateOrder }
-                                            color="secondary" 
-                                            className='circular-btn' 
-                                            fullWidth
-                                            disabled={ isPosting }
-                                        >
-                                            Confirmar Orden
-                                        </Button>
-
-                                        <Chip 
-                                            color="error"
-                                            label={ errorMessage }
-                                            sx={{ display: errorMessage ? 'flex':'none', mt: 2 }}
-                                        />
-
-                                    </Box>
-
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
+                            <h3 className='text-md'>{ firstName } { lastName }</h3>
+                            <h3 className='text-md'>{ address }{ address2 ? `, ${address2}` : ''  } </h3>
+                            <h3 className='text-md'>{ city }, { zip }</h3>
+                            {/* <Typography>{ countries.find( c => c.code === country )?.name }</Typography> */}
+                            <h3 className='text-md'>{ country }</h3>
+                            <h3 className='text-md mb-3'>{ phone }</h3>
+                            <hr />
+                            <OrderSummary />
+                            <Link href='/checkout/session'>
+                                <p className='my-5 p-2 rounded-full w-full flex justify-center text-white bg-indigo-600'>Proceder al pago</p>
+                            </Link>
+                            {/* <button
+                                onClick={ handleCheckout }
+                                className='my-5 p-2 rounded-full w-full bg-indigo-600' 
+                                disabled={ isPosting }
+                            >
+                                Confirmar Orden
+                            </button> */}
+                        </div>
+                    </div>
                 </>
             )
     }

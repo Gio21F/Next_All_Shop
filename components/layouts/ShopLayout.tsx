@@ -1,7 +1,8 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useContext } from 'react';
 import Head from 'next/head';
-
-import { Navbar, SideMenu } from '../ui';
+import { Nav } from '../ui/Nav';
+import { Search } from '../products/Search';
+import { UiContext } from '@/context';
 
 
 interface Props {
@@ -9,47 +10,34 @@ interface Props {
     children: ReactNode;
     pageDescription: string;
     imageFullUrl?: string;
+    autoHeight?: boolean;
 }
 
-export const ShopLayout:FC<Props> = ({ children, title, pageDescription, imageFullUrl }) => {
+export const ShopLayout:FC<Props> = ({ children, title, pageDescription, imageFullUrl, autoHeight = false }) => {
+  const { theme } = useContext(UiContext); 
   return (
     <>
         <Head>
             <title>{ title }</title>
-
             <meta name="description" content={ pageDescription } />
-            
-            
             <meta name="og:title" content={ title } />
             <meta name="og:description" content={ pageDescription } />
-
             {
                 imageFullUrl && (
                     <meta name="og:image" content={ imageFullUrl } />
                 )
             }
-
         </Head> 
-
-        <nav>
-            <Navbar />
-        </nav>
-
-        <SideMenu />
-
-        <main style={{
-            margin: '80px auto',
-            maxWidth: '1440px',
-            padding: '0px 30px'
-        }}>
-            { children }
+        
+        <main className={`${ theme } max-w-[1700px] ${autoHeight ? 'h-auto' : 'h-screen'} min-w-[320px] bg-white dark:bg-zinc-900`}>
+            <nav>
+                <Nav />
+            </nav>
+            <div className='w-full px-2 md:px-10 py-3 pb-5'>
+                <Search />
+                { children }
+            </div>
         </main>
-
-        {/* Footer */}
-        <footer>
-            {/* TODO: mi custom footer */}
-        </footer>
-
     </>
   )
 }

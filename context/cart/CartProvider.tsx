@@ -49,9 +49,12 @@ export const CartProvider:FC<Props> = ({ children }) => {
     // Efecto
     useEffect(() => {
         try {
-            const cookieProducts = Cookie.get('cart') ? JSON.parse( Cookie.get('cart')! ): []
+            const cookieProducts = Cookie.get('cart') ? JSON.parse( Cookie.get('cart')! ) : []
+            // console.log("Products", cookieProducts)
             dispatch({ type: '[Cart] - LoadCart from cookies | storage', payload: cookieProducts });
+            // console.log("state.cart", state.cart)
         } catch (error) {
+            console.error(error)
             dispatch({ type: '[Cart] - LoadCart from cookies | storage', payload: [] });
         }
     }, []);
@@ -76,7 +79,7 @@ export const CartProvider:FC<Props> = ({ children }) => {
 
 
     useEffect(() => {
-      Cookie.set('cart', JSON.stringify( state.cart ));
+        Cookie.set('cart', JSON.stringify( state.cart ));
     }, [state.cart]);
 
 
@@ -99,15 +102,15 @@ export const CartProvider:FC<Props> = ({ children }) => {
 
 
     const addProductToCart = ( product: ICartProduct ) => {
-        const productInCart = state.cart.some( p => p._id === product._id );
+        const productInCart = state.cart.some( p => p.id === product.id );
         if ( !productInCart ) return dispatch({ type: '[Cart] - Update products in cart', payload: [...state.cart, product ] })
 
-        const productInCartButDifferentSize = state.cart.some( p => p._id === product._id && p.size === product.size );
+        const productInCartButDifferentSize = state.cart.some( p => p.id === product.id && p.size === product.size );
         if ( !productInCartButDifferentSize ) return dispatch({ type: '[Cart] - Update products in cart', payload: [...state.cart, product ] })
 
         // Acumular
         const updatedProducts = state.cart.map( p => {
-            if ( p._id !== product._id ) return p;
+            if ( p.id !== product.id ) return p;
             if ( p.size !== product.size ) return p;
 
             // Actualizar la cantidad
@@ -140,46 +143,46 @@ export const CartProvider:FC<Props> = ({ children }) => {
         dispatch({ type: '[Cart] - Update Address', payload: address });
     }
 
-    const createOrder = async() => {
+    // const createOrder = async() => {
 
-        if ( !state.shippingAddress ) {
-            throw new Error('No hay dirección de entrega');
-        }
+    //     if ( !state.shippingAddress ) {
+    //         throw new Error('No hay dirección de entrega');
+    //     }
 
-        const body: IOrder = {
-            orderItems: state.cart.map( p => ({
-                ...p,
-                size: p.size!
-            })),
-            shippingAddress: state.shippingAddress,
-            numberOfItems: state.numberOfItems,
-            subTotal: state.subTotal,
-            tax: state.tax,
-            total: state.total,
-            isPaid: false
-        }
+    //     const body: IOrder = {
+    //         orderItems: state.cart.map( p => ({
+    //             ...p,
+    //             size: p.size!
+    //         })),
+    //         shippingAddress: state.shippingAddress,
+    //         numberOfItems: state.numberOfItems,
+    //         subTotal: state.subTotal,
+    //         tax: state.tax,
+    //         total: state.total,
+    //         isPaid: false
+    //     }
 
-        try {
-            const { data } = await shopApi.post<IOrder>('/orders', body);
-            dispatch({ type: '[Cart] - Order complete' });
+    //     try {
+    //         const { data } = await shopApi.post<IOrder>('/orders', body);
+    //         dispatch({ type: '[Cart] - Order complete' });
 
-            return {
-                hasError: false,
-                message: data._id!
-            }
-        } catch (error) {
-            if ( axios.isAxiosError(error) ) {
-                return {
-                    hasError: true,
-                    message: error.response?.data.message
-                }
-            }
-            return {
-                hasError: true,
-                message : 'Error no controlado, hable con el administrador'
-            }
-        }
-    }
+    //         return {
+    //             hasError: false,
+    //             message: data.id!
+    //         }
+    //     } catch (error) {
+    //         if ( axios.isAxiosError(error) ) {
+    //             return {
+    //                 hasError: true,
+    //                 message: error.response?.data.message
+    //             }
+    //         }
+    //         return {
+    //             hasError: true,
+    //             message : 'Error no controlado, hable con el administrador'
+    //         }
+    //     }
+    // }
 
 
     return (
@@ -193,7 +196,7 @@ export const CartProvider:FC<Props> = ({ children }) => {
             updateAddress,
 
             // Order
-            createOrder
+            // createOrder
         }}>
             { children }
         </CartContext.Provider>

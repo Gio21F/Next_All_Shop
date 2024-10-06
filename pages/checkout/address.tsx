@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 
@@ -72,98 +71,102 @@ const AddressPage = () => {
     if ( isSSR ) return (<></>)
     return (
         <ShopLayout title="Dirección" pageDescription="Confirmar dirección del destino">
-            <form onSubmit={ handleSubmit( onSubmitAddress ) }>
-
-        
-                <Typography variant="h1" component='h1'>Dirección</Typography>
-
-                <Grid container spacing={ 2 } sx={{ mt: 2 }}>
-                    
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField
-                            label='Nombre'
-                            variant="filled"
-                            fullWidth 
+            <form className='h-screen max-w-[1200px] flex flex-col mt-10 text-black dark:text-white' onSubmit={ handleSubmit( onSubmitAddress ) }>
+                <h1 className='text-3xl font-semibold'>Dirección</h1>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mt-5'>
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input
+                            placeholder=''
+                            type='text'
+                            id='floating_firstName'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
                             { ...register('firstName', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.firstName }
-                            helperText={ errors.firstName?.message }
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField
-                            label='Apellido'
-                            variant="filled"
-                            fullWidth
+                        <label htmlFor="floating_firstName" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre</label>
+                        {errors.firstName && <p>{errors.firstName.message}</p>}
+                    </div>
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input
+                            placeholder=''
+                            id='floating_lastName'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('lastName', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.lastName }
-                            helperText={ errors.lastName?.message }
-                            />
-                    </Grid>
+                        />
+                        <label htmlFor="floating_lastName" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido</label>
+                        {errors.lastName && <p>{errors.lastName.message}</p>}
+                    </div>
 
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField
-                            label='Dirección'
-                            variant="filled"
-                            fullWidth
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input
+                            placeholder=''
+                            id='floating_address'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('address', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.address }
-                            helperText={ errors.address?.message }
-                            />
-                    </Grid>
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField 
-                            label='Dirección 2 (opcional)' 
-                            variant="filled" 
-                            fullWidth 
+                        />
+                        <label htmlFor="floating_address" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion</label>
+                        {errors.address && <p>{errors.address.message}</p>}
+                    </div>
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input 
+                            placeholder='' 
+                            id='floating_address2'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('address2')}
                         />
-                    </Grid>
+                        <label htmlFor="floating_address2" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección 2(opcional)</label>
+                    </div>
 
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField 
-                            label='Código Postal'
-                            variant="filled"
-                            fullWidth
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input 
+                            placeholder=''
+                            id='floating_zip'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('zip', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.zip }
-                            helperText={ errors.zip?.message }
-                            />
-                    </Grid>
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField
-                            label='Ciudad'
-                            variant="filled"
-                            fullWidth
+                        />
+                        <label htmlFor="floating_zip" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Código Postal</label>
+                        {errors.zip && <p>{errors.zip.message}</p>}
+                    </div>
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input
+                            placeholder=''
+                            id='floating_city'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('city', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.city }
-                            helperText={ errors.city?.message }
-                            />
-                    </Grid>
+                        />
+                        <label htmlFor="floating_city" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cuidad</label>
+                        {errors.city && <p>{errors.city.message}</p>}
+                    </div>
                     
-                    <Grid item xs={12} sm={ 6 }>
+                    <div className='relative z-0 w-full mb-5 group'>
                          {/* <FormControl fullWidth> */}
-                         <TextField
+                         <input
                             // select
-                            variant="filled"
-                            label="País"
-                            fullWidth
+                            placeholder=""
+                            type='text'
+                            id='floating_country'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
                             // defaultValue={ Cookies.get('country') || countries[0].code }
                             { ...register('country', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.country }
-                            helperText={ errors.country?.message }
                         />
+                        <label htmlFor="floating_country" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pais</label>
+                        {errors.country && <p>{errors.country.message}</p>}
                             {/* {
                                 countries.map( country => (
                                     <MenuItem 
@@ -172,30 +175,29 @@ const AddressPage = () => {
                                     >{ country.name }</MenuItem>
                                 ))
                             }
-                        </TextField> */}
+                        </input> */}
                     {/* </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} sm={ 6 }>
-                        <TextField
-                            label='Teléfono'
-                            variant="filled"
-                            fullWidth
+                    </div>
+                    <div className='relative z-0 w-full mb-5 group'>
+                        <input
+                            placeholder=''
+                            id='floating_phone'
+                            className='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                            type='text'
                             { ...register('phone', {
                                 required: 'Este campo es requerido'
                             })}
-                            error={ !!errors.phone }
-                            helperText={ errors.phone?.message }
-                            />
-                    </Grid>
+                        />
+                        <label htmlFor="floating_phone" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono</label>
+                        {errors.phone && <p>{errors.phone.message}</p>}
+                    </div>
+                </div>
 
-                </Grid>
-
-
-                <Box sx={{ mt: 5 }} display='flex' justifyContent='center'>
-                    <Button type="submit" color="secondary" className="circular-btn" size="large">
+                <div className='flex justify-center w-full relative'>
+                    <button type="submit" className="bg-indigo-600 w-[200px] px-2 py-3 rounded-full text-white">
                         Revisar pedido
-                    </Button>
-                </Box>
+                    </button>
+                </div>
 
             </form>
         </ShopLayout>

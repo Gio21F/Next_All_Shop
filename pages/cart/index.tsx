@@ -1,11 +1,9 @@
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
-
-import { Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
-
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
 import { CartContext } from '../../context';
+import Link from 'next/link';
 
 const CartPage = () => {
     const { numberOfItems, isLoaded, cart } = useContext( CartContext );
@@ -20,38 +18,27 @@ const CartPage = () => {
     if ( !isLoaded || cart.length === 0 ) return (<></>);
 
     return (
-        <ShopLayout title={ `Carrito - ${numberOfItems}`} pageDescription={'Carrito de compras de la tienda'}>
-            <Typography variant='h1' component='h1'>Carrito</Typography>
-
-            <Grid container>
-                <Grid item xs={ 12 } sm={ 7 }>
+        <ShopLayout autoHeight={true} title={ `Carrito - ${numberOfItems}`} pageDescription={'Carrito de compras de la tienda'}>
+            <h1 className='text-3xl font-bold pb-5 text-black dark:text-white'>Carrito</h1>
+            <div className='h-full grid lg:grid-cols-2 grid-cols-1 gap-4 text-black dark:text-white'>
+                {/* Products */}
+                <div className='h-[400px] lg:h-[500px] overflow-y-auto'>
                     <CartList editable />
-                </Grid>
-                <Grid item xs={ 12 } sm={ 5 }>
-                    <Card className='summary-card'>
-                        <CardContent>
-                            <Typography variant='h2'>Orden</Typography>
-                            <Divider sx={{ my:1 }} />
+                </div>
+                {/* Order */}
+                <div className='summary-card dark:shadow-sm dark:shadow-white/80 p-4 rounded-md h-[270px]'>
+                    <h4 className='text-md font-semibold mb-2 '>Orden</h4>
+                    <hr />
 
-                            <OrderSummary />
+                    <OrderSummary />
 
-                            <Box sx={{ mt: 3 }}>
-                                <Button 
-                                    color="secondary" 
-                                    className='circular-btn' 
-                                    fullWidth
-                                    href='/checkout/address'
-                                >
-                                    Checkout
-                                </Button>
-                            </Box>
-
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-
-
+                    <div className='mt-5'>
+                        <Link href='/checkout/address'>
+                            <p className='w-full flex justify-center bg-indigo-700 p-2 rounded-full text-white' >Checkout</p>
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </ShopLayout>
     )
 }

@@ -1,19 +1,12 @@
-import { Box, Typography } from '@mui/material';
 import { ShopLayout } from "../components/layouts";
 
 const Custom404 = () => {
   return (
     <ShopLayout title='Page not found' pageDescription='No hay nada que mostrar aquí'>
-        <Box 
-            display='flex' 
-            justifyContent='center' 
-            alignItems='center' 
-            height='calc(100vh - 200px)'
-            sx={{ flexDirection: { xs: 'column', sm: 'row' }}}
-        >
-            <Typography variant='h1' component='h1' fontSize={80} fontWeight={200}>404 |</Typography>
-            <Typography marginLeft={2}>No encontramos ninguna página aquí</Typography>
-        </Box>
+        <div style={{ height: 'calc(100vh - 110px)' }} className='w-full flex place-content-center justify-center text-black dark:text-white'>
+            <h1 className='text-7xl mt-52'>404 |</h1>
+            <h2 className='text-5xl pt-5 mt-52'>No encontramos ninguna página aquí</h2>
+        </div>
     </ShopLayout>
   )
 }

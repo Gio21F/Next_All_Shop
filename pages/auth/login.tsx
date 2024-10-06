@@ -1,149 +1,128 @@
-import { GetServerSideProps } from 'next'
-import NextLink from 'next/link';
-
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getSession, signIn, getProviders } from 'next-auth/react';
-
+import { signIn } from 'next-auth/react';
 import { useState, useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
-import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
-
-// import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts'
 import { validations } from '../../utils';
+import { AuthContext } from '../../context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 type FormData = {
     email   : string,
     password: string,
-  };
+};
 
 
 const LoginPage = () => {
 
     const router = useRouter();
-    // const { loginUser } = useContext( AuthContext );
-
+    const { loginUser, user, isLoggedIn } = useContext( AuthContext );
+    const [ showError, setShowError ] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-    const [ showError, setShowError ] = useState(false);
 
-    const [providers, setProviders] = useState<any>({})
     useEffect(() => {
-      getProviders().then(res => {
-        setProviders(res)
-      })
-    }, [])
-    
+        if (isLoggedIn) {
+            let destination = '/';
+            if (router.query.callbackUrl) {
+                const callbackUrl = router.query.callbackUrl as string;
+                const url = new URL(callbackUrl);
+                destination = url.pathname + url.search;
+            }
+            else if (router.query.p) {
+                destination = router.query.p as string;
+            }
+            router.push(destination);
+        }
+    })
+
     const onLoginUser = async( { email, password }: FormData ) => {
-
-        setShowError(false);
-        signIn('credentials', { email, password })
-
-        // const isValidLogin = await loginUser( email, password );
-        // if ( !isValidLogin ) {
-        //     setShowError(true);
-        //     setTimeout(() => setShowError(false), 3000);
-        //     return;
-        // }
-        // // Todo: navegar a la pantalla que el usuario estaba
-        // const destination = router.query.p as string || '/';
-        // router.replace(destination);
+        signIn('credentials', { email, password, redirect: false })
+            .then((response:any) => {
+                if(response.status !== 200){
+                    setShowError(true)
+                    setTimeout(() => setShowError(false), 3000 )
+                }
+            });
     }
 
     return (
         <AuthLayout title={'Ingresar'}>
-            <form onSubmit={ handleSubmit(onLoginUser) } noValidate>
-                <Box sx={{ width: 350, padding:'10px 20px' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant='h1' component="h1">Iniciar Sesión</Typography>
-                            <Chip 
-                                label="No reconocemos ese usuario / contraseña"
-                                color="error"
-                                icon={ <ErrorOutline /> }
-                                className="fadeIn"
-                                sx={{ display: showError ? 'flex': 'none' }}
-                            />
-                        </Grid>
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+                <div className="sm:mx-auto sm:w-full sm:max-w-sm dark:text-white text-black">
+                    <Link href="/" className='flex justify-center'>
+                        <img src="/shop.webp" className='w-32 h-32 object-cover' alt="Logo" />
+                    </Link>
+                    <h2 className="text-center text-2xl font-bold leading-9 tracking-tight">
+                        Sign in to your account
+                    </h2>
+                </div>
+                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                    <form onSubmit={handleSubmit(onLoginUser)} className="space-y-6">
+                        <div>
+                            {showError && (
+                                <p className='p-4 my-2 rounded-md bg-red-600 text-cyan-50'>Error de credenciales</p>
+                            )}
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 dark:text-white text-black">
+                                Email address
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    id="email"
+                                    type="email"
+                                    required
+                                    autoComplete="email"
+                                    className="block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    { ...register('email', {
+                                        required: 'Este campo es requerido',
+                                        validate: validations.isEmail
+                                    })}
+                                />
+                                {errors.email && <p>{errors.email.message}</p>}
+                               
+                            </div>
+                        </div>
 
-                        <Grid item xs={12}>
-                            <TextField
-                                type="email"
-                                label="Correo"
-                                variant="filled"
-                                fullWidth 
-                                { ...register('email', {
-                                    required: 'Este campo es requerido',
-                                    validate: validations.isEmail
-                                    
-                                })}
-                                error={ !!errors.email }
-                                helperText={ errors.email?.message }
-                            />
+                        <div>
+                            <div className="flex items-center justify-between">
+                                <label htmlFor="password" className="block text-sm font-medium leading-6 dark:text-white text-black">
+                                    Password
+                                </label>
+                                {/* <div className="text-sm">
+                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                        Forgot password?
+                                    </a>
+                                </div> */}
+                            </div>
+                            <div className="mt-2">
+                                <input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    autoComplete="current-password"
+                                    className="block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    { ...register('password', {
+                                        required: 'Este campo es requerido',
+                                        minLength: { value: 6, message: 'Mínimo 6 caracteres' }
+                                    })}
+                                />
+                                {errors.password && <p>{errors.password.message}</p>}
+                            </div>
+                        </div>
 
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Contraseña"
-                                type='password'
-                                variant="filled"
-                                fullWidth 
-                                { ...register('password', {
-                                    required: 'Este campo es requerido',
-                                    minLength: { value: 6, message: 'Mínimo 6 caracteres' }
-                                })}
-                                error={ !!errors.password }
-                                helperText={ errors.password?.message }
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Button
+                        <div>
+                            <button
                                 type="submit"
-                                color="secondary"
-                                className='circular-btn'
-                                size='large'
-                                fullWidth>
-                                Ingresar
-                            </Button>
-                        </Grid>
-
-                        <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink 
-                                href={ router.query.p ? `/auth/register?p=${ router.query.p }` : '/auth/register' }
-                                passHref
+                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                <Link underline='always'>
-                                    ¿No tienes cuenta?
-                                </Link>
-                            </NextLink>
-                        </Grid>
+                                Sign in
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-                        <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end' >
-                            <Divider sx={{ width: '100%', mb: 2 }} />
-                            {
-                                Object.values(providers).map((provider:any) => {
-                                    if (provider.id === 'credentials') return (<div key="credentials"></div>) 
-                                    return (
-                                        <Button
-                                            onClick={() => signIn(provider.id)}
-                                            key={ provider.id }
-                                            variant='outlined'
-                                            fullWidth
-                                            color='primary'
-                                            sx={{ mb:1 }}
-                                        >
-                                            { provider.name }
-                                        </Button>
-                                    )
-                                })
-                            }
-                        </Grid>
-                    </Grid>
-                </Box>
-            </form>
         </AuthLayout>
   )
 }
@@ -151,22 +130,22 @@ const LoginPage = () => {
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+// export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
 
-    const session = await getSession({req})
-    const { p = '/'} = query 
-    if ( session ) {
-        return {
-            redirect: {
-                destination: p.toString(),
-                permanent: false,
-            }
-        }
-    }
+//     const session = await getSession({req})
+//     const { p = '/'} = query 
+//     if ( session ) {
+//         return {
+//             redirect: {
+//                 destination: p.toString(),
+//                 permanent: false,
+//             }
+//         }
+//     }
 
-    return {
-        props: {}
-    }
-}
+//     return {
+//         props: {}
+//     }
+// }
 
 export default LoginPage

@@ -1,10 +1,6 @@
-import { FC, ReactNode } from 'react';
-import { Box, Typography } from '@mui/material';
-import { AdminNavbar } from '../admin';
-
-import { SideMenu } from '../ui';
-
-
+import { FC, ReactNode, useContext } from 'react';
+import { Nav } from '../ui/Nav';
+import { UiContext } from '@/context';
 interface Props {
     title: string;
     subTitle: string;
@@ -12,38 +8,31 @@ interface Props {
     children: ReactNode;
 }
 
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
+
 export const AdminLayout:FC<Props> = ({ children, title, subTitle, icon }) => {
-  return (
-    <>
-
+    const { theme } = useContext(UiContext);   
+    return (
+    <main className={`${theme} max-w-[1700px] min-w-[320px] h-full bg-white dark:bg-zinc-900`}>
         <nav>
-            <AdminNavbar />
+            <Nav />
         </nav>
-
-        <SideMenu />
-
-        <main style={{
-            margin: '80px auto',
-            maxWidth: '1440px',
-            padding: '0px 30px'
-        }}>
-
-            <Box display="flex" flexDirection='column'>
-                <Typography variant='h1' component='h1'>
+        <div className='max-w-[1700px] px-2 md:px-10 py-3 text-black dark:text-white'>
+            <div className='flex flex-col my-4'>
+                <h1 className='text-3xl font-semibold flex'>
                     { icon }
                     {' '} { title }
-                </Typography>
-                <Typography variant='h2' sx={{ mb: 1 }}>{ subTitle }</Typography>
+                </h1>
+                <h2 className='text-xl'>{ subTitle }</h2>
+            </div>
 
-            </Box>
-
-            <Box className='fadeIn'>
+            <div className='fadeIn h-auto'>
                 { children }
-            </Box>
+            </div>
+        </div>
 
-        </main>
-
-
-    </>
+    </main>
   )
 }

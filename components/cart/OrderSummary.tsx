@@ -1,5 +1,4 @@
 import { FC, useContext } from 'react';
-import { Grid, Typography } from '@mui/material';
 import { CartContext } from '../../context/cart/CartContext';
 import { currency } from '../../utils';
 
@@ -20,36 +19,27 @@ export const OrderSummary: FC<Props> = ({ orderValues }) => {
     const summaryValues = orderValues ? orderValues : { numberOfItems, subTotal, total, tax };
   
   return (
-    <Grid container>
+    <div className='flex flex-col mt-2'>
         
-        <Grid item xs={6}>
-            <Typography>No. Productos</Typography>
-        </Grid>
-        <Grid item xs={6} display='flex' justifyContent='end'>
-            <Typography>{summaryValues.numberOfItems} { summaryValues.numberOfItems > 1 ? 'productos': 'producto' }</Typography>
-        </Grid>
+        <div className='flex justify-between'>
+            <p className='text-md'>No. Productos</p>
+            <p className='text-md'>{summaryValues.numberOfItems} { summaryValues.numberOfItems > 1 ? 'productos': 'producto' }</p>
+        </div>
 
-        <Grid item xs={6}>
-            <Typography>SubTotal</Typography>
-        </Grid>
-        <Grid item xs={6} display='flex' justifyContent='end'>
-            <Typography>{ currency.format(summaryValues.subTotal) }</Typography>
-        </Grid>
+        <div className='flex justify-between'>
+            <p className='text-md'>SubTotal</p>
+            <p className='text-md'>{ currency.format(summaryValues.subTotal) }</p>
+        </div>
 
-        <Grid item xs={6}>
-            <Typography>Impuestos ({ Number(process.env.NEXT_PUBLIC_TAX_RATE) * 100 }%)</Typography>
-        </Grid>
-        <Grid item xs={6} display='flex' justifyContent='end'>
-            <Typography>{ currency.format(summaryValues.tax) }</Typography>
-        </Grid>
+        <div className='flex justify-between'>
+            <p className='text-md'>Impuestos ({ Number(process.env.NEXT_PUBLIC_TAX_RATE) * 100 }%)</p>
+            <p className='text-md'>{ currency.format(summaryValues.tax) }</p>
+        </div>
 
-        <Grid item xs={6} sx={{ mt:2 }}>
-            <Typography variant="subtitle1">Total:</Typography>
-        </Grid>
-        <Grid item xs={6} sx={{ mt:2 }} display='flex' justifyContent='end'>
-            <Typography variant="subtitle1">{ currency.format(summaryValues.total) }</Typography>
-        </Grid>
-
-    </Grid>
+        <div className='flex justify-between mt-2'>
+            <p className='text-md font-semibold'>Total:</p>
+            <p className='text-md font-semibold'>{ currency.format(summaryValues.total) }</p>
+        </div>
+    </div>
   )
 }

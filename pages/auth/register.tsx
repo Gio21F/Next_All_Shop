@@ -1,20 +1,16 @@
 import { GetServerSideProps } from 'next'
 import { useState, useContext } from 'react';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getSession, signIn } from 'next-auth/react';
-
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
-import { ErrorOutline } from '@mui/icons-material';
+import { getSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-
 import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts'
 import { validations } from '../../utils';
 
 
 type FormData = {
-    name    : string;
+    fullName    : string;
     email   : string;
     password: string;
 };
@@ -30,10 +26,10 @@ const RegisterPage = () => {
     const [ showError, setShowError ] = useState(false);
     const [ errorMessage, setErrorMessage ] = useState('');
 
-    const onRegisterForm = async( {  name, email, password }: FormData ) => {
+    const onRegisterForm = async( {  fullName, email, password }: FormData ) => {
         
         setShowError(false);
-        const { hasError, message } = await registerUser(name, email, password);
+        const { hasError, message } = await registerUser(fullName, email, password);
 
         if ( hasError ) {
             setShowError(true);
@@ -42,96 +38,91 @@ const RegisterPage = () => {
             return;
         }
         
-        // const destination = router.query.p as string || '/';
-        // router.replace(destination);
+        const destination = router.query.p as string || '/';
+        router.replace(destination);
 
-        signIn('credentials', { email, password })
+        // signIn('credentials', { email, password })
 
     }
 
     return (
         <AuthLayout title={'Ingresar'}>
             <form onSubmit={ handleSubmit(onRegisterForm) } noValidate>
-                <Box sx={{ width: 350, padding:'10px 20px' }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant='h1' component="h1">Crear cuenta</Typography>
-                            <Chip 
-                                label="No reconocemos ese usuario / contraseña"
-                                color="error"
-                                icon={ <ErrorOutline /> }
-                                className="fadeIn"
-                                sx={{ display: showError ? 'flex': 'none' }}
-                            />
-                        </Grid>
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                        Email address
+                    </label>
+                    <div className="mt-2">
+                        <input
+                            id="fullName"
+                            type="text"
+                            required
+                            autoComplete="fullName"
+                            className="block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            { ...register('fullName', {
+                                required: 'Este campo es requerido',
+                                minLength: { value: 2, message: 'Mínimo 2 caracteres' }
+                            })}
+                        />
+                        {errors.fullName && <p>{errors.fullName.message}</p>}
+                    </div>
+                </div>
 
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Nombre completo"
-                                variant="filled"
-                                fullWidth 
-                                { ...register('name', {
-                                    required: 'Este campo es requerido',
-                                    minLength: { value: 2, message: 'Mínimo 2 caracteres' }
-                                })}
-                                error={ !!errors.name }
-                                helperText={ errors.name?.message }
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                type="email"
-                                label="Correo"
-                                variant="filled"
-                                fullWidth 
-                                { ...register('email', {
-                                    required: 'Este campo es requerido',
-                                    validate: validations.isEmail
-                                    
-                                })}
-                                error={ !!errors.email }
-                                helperText={ errors.email?.message }
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Contraseña"
-                                type='password'
-                                variant="filled"
-                                fullWidth 
-                                { ...register('password', {
-                                    required: 'Este campo es requerido',
-                                    minLength: { value: 6, message: 'Mínimo 6 caracteres' }
-                                })}
-                                error={ !!errors.password }
-                                helperText={ errors.password?.message }
-                            />
-                        </Grid>
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                        Email address
+                    </label>
+                    <div className="mt-2">
+                        <input
+                            id="email"
+                            type="email"
+                            required
+                            autoComplete="email"
+                            className="block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            { ...register('email', {
+                                required: 'Este campo es requerido',
+                                validate: validations.isEmail
+                            })}
+                        />
+                        {errors.email && <p>{errors.email.message}</p>}
+                    </div>      
+                </div>
 
-                        <Grid item xs={12}>
-                            <Button
-                                type="submit"
-                                color="secondary"
-                                className='circular-btn'
-                                size='large'
-                                fullWidth
-                            >
-                                Ingresar
-                            </Button>
-                        </Grid>
-
-                        <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink 
-                                href={ router.query.p ? `/auth/login?p=${ router.query.p }` : '/auth/login' }
-                                passHref
-                            >
-                                <Link underline='always'>
-                                    ¿Ya tienes cuenta?
-                                </Link>
-                            </NextLink>
-                        </Grid>
-                    </Grid>
-                </Box>
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                        Password
+                    </label>
+                    <div className="mt-2">
+                        <input
+                            id="password"
+                            type="password"
+                            required
+                            autoComplete="current-password"
+                            className="block p-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            { ...register('password', {
+                                required: 'Este campo es requerido',
+                                minLength: { value: 6, message: 'Mínimo 6 caracteres' }
+                            })}
+                        />
+                        {errors.password && <p>{errors.password.message}</p>}
+                    </div>
+                </div>                            
+                
+                <div className="flex items-center justify-between">
+                    <div className="text-sm">
+                        <a href={ router.query.p ? `/auth/login?p=${ router.query.p }` : '/auth/login' } className="font-semibold text-indigo-600 hover:text-indigo-500">
+                            ¿Ya tienes cuenta?
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Sign Up
+                    </button>
+                </div>
             </form>
         </AuthLayout>
     )

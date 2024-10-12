@@ -37,3 +37,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer utilities {
+  /* Estilos para el modo claro (por defecto) */
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 12px;
+  }
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #1b3887; /* Azul oscuro en el modo claro */
+    border-radius: 6px;
+    border: 3px solid #c5c6caac; /* Espacio alrededor del thumb */
+  }
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background-color: #c5c6caac; /* Gris claro */
+  }
+
+  /* Estilos para el modo oscuro */
+  .dark .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #9ca3af; /* Gris claro en el modo oscuro */
+    border: 3px solid #1f2937; /* Espacio más oscuro alrededor del thumb */
+  }
+  .dark .scrollbar-custom::-webkit-scrollbar-track {
+    background-color: #28303c; /* Fondo más oscuro para el track */
+  }
+}

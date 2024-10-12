@@ -6,16 +6,17 @@ interface Props {
     subTitle: string;
     icon?: JSX.Element;
     children: ReactNode;
+    autoHeight?: boolean;
 }
 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 
-export const AdminLayout:FC<Props> = ({ children, title, subTitle, icon }) => {
+export const AdminLayout:FC<Props> = ({ children, title, subTitle, icon, autoHeight = false }) => {
     const { theme } = useContext(UiContext);   
     return (
-    <main className={`${theme} max-w-[1700px] min-w-[320px] h-full bg-white dark:bg-zinc-900`}>
+    <main className={`${theme} max-w-[1700px] min-w-[320px] ${autoHeight ? 'h-auto' : 'h-screen'} bg-zinc-200 dark:bg-zinc-950`}>
         <nav>
             <Nav />
         </nav>

@@ -1,46 +1,23 @@
-import { ISize } from "./products";
+import { IProduct, ISize } from "./products";
 import { IUser } from "./user";
 
 export interface IOrder {
-
-    _id?: string;
-    user?: IUser | string;
-    orderItems: IOrderItem[];
-    shippingAddress: ShippingAddress;
-    paymentResult?: string;
-
-    numberOfItems: number;
-    subTotal: number;
-    tax: number;
-    total: number;
-
-    isPaid: boolean;
-    paidAt?: string;
-
-    transactionId?: string
-
-    createdAt?: string;
-
+    id: string;
+    amount_subtotal: number;
+    amount_total: number;
+    status: string;
+    transaction_id: string;
+    created_at?: string;
+    updated_at?: string;
+    user: IUser;
+    details: IOrderItem[];
 }
 
 export interface IOrderItem {
-    _id: string;
-    title: string;
-    size: ISize;
+    id: number;
     quantity: number;
-    slug: string;
-    image: string;
-    price: number;
-    gender: string;
-}
-
-export interface ShippingAddress {
-    firstName: string;
-    lastName : string;
-    address  : string;
-    address2?: string;
-    zip      : string;
-    city     : string;
-    country  : string;
-    phone    : string;
+    size: ISize;
+    price_per_unit: number;
+    subtotal: number;
+    product: IProduct
 }

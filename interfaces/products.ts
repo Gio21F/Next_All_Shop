@@ -7,6 +7,7 @@ export interface IProduct {
     price: number;
     sizes: ISize[];
     images: string[];
+    imageUrls?: string[];
     tags: string[];
     type: IType;
     gender: 'men'|'women'|'kid'|'unisex'

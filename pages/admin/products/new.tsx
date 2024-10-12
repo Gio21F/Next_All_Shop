@@ -9,6 +9,7 @@ import { useSnackbar, VariantType } from 'notistack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faCloudArrowUp, faPenToSquare, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ImageUpload } from '@/components/products';
+import { capitalize } from '@/utils/capitalize';
 
 const validGender = ['men','women','kid','unisex']
 const validSizes = ['XS','S','M','L','XL','XXL','XXXL']
@@ -70,6 +71,7 @@ const ProductAdminPage:NextPage<Props> = ({ product, isNew }) => {
               const newSlug = value.title?.trim()
                     .replaceAll(' ', '_')
                     .replaceAll("'", '')
+                    .replace(/[^a-zA-Z0-9_]/g, '')
                     .toLocaleLowerCase() || '';
 
                setValue('slug', newSlug);
@@ -129,6 +131,7 @@ const ProductAdminPage:NextPage<Props> = ({ product, isNew }) => {
     return (
         <AdminLayout 
             title={'Producto'} 
+            autoHeight={true}
             subTitle="Creando un nuevo producto"
             icon={ <FontAwesomeIcon icon={faPenToSquare} className="fa-fw mx-2" /> }
         >
@@ -265,7 +268,7 @@ const ProductAdminPage:NextPage<Props> = ({ product, isNew }) => {
                                                     onChange={ ({ target })=> setValue('gender', target.value, { shouldValidate: true }) }
                                                 />
                                                 <label htmlFor={option} className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                    {option}
+                                                    {capitalize(option)}
                                                 </label>
                                             </div>
                                         ))

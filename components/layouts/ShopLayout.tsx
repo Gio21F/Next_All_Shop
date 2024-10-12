@@ -29,7 +29,7 @@ export const ShopLayout:FC<Props> = ({ children, title, pageDescription, imageFu
             }
         </Head> 
         
-        <main className={`${ theme } max-w-[1700px] ${autoHeight ? 'h-auto' : 'h-screen'} min-w-[320px] bg-white dark:bg-zinc-900`}>
+        <main className={`${ theme } max-w-[1700px] ${autoHeight ? 'h-auto' : 'h-screen'} min-w-[320px] bg-zinc-200 dark:bg-zinc-950`}>
             <nav>
                 <Nav />
             </nav>

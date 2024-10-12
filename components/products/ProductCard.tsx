@@ -24,7 +24,7 @@ export const ProductCard = ({ product }:Props) => {
     }, [isHovered, product.images])
     return (
       <div
-        className='shadow-md dark:shadow-white/15 rounded-lg h-[350px]'
+        className='dark:bg-zinc-900 bg-white shadow-lg rounded-lg h-[350px]'
         onMouseEnter={ () => setIsHovered(true) } 
         onMouseLeave={ () => setIsHovered(false) }
       >

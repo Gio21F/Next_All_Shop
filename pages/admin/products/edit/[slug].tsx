@@ -9,6 +9,7 @@ import { useSnackbar, VariantType } from 'notistack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faCloudArrowUp, faPenToSquare, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ImageUpload } from '@/components/products';
+import { capitalize } from '@/utils/capitalize';
 
 const validGender = ['men','women','kid','unisex']
 const validSizes = ['XS','S','M','L','XL','XXL','XXXL']
@@ -62,6 +63,7 @@ const ProductAdminPage:NextPage<Props> = ({ product }) => {
               const newSlug = value.title?.trim()
                     .replaceAll(' ', '_')
                     .replaceAll("'", '')
+                    .replace(/[^a-zA-Z0-9_]/g, '')
                     .toLocaleLowerCase() || '';
 
                setValue('slug', newSlug);
@@ -133,6 +135,7 @@ const ProductAdminPage:NextPage<Props> = ({ product }) => {
     return (
         <AdminLayout 
             title={'Producto'} 
+            autoHeight={true}
             subTitle={`Editando: ${product.title}`}
             icon={ <FontAwesomeIcon icon={faPenToSquare} className="fa-fw mx-2" /> }
         >
@@ -269,7 +272,7 @@ const ProductAdminPage:NextPage<Props> = ({ product }) => {
                                                     onChange={ ({ target })=> setValue('gender', target.value, { shouldValidate: true }) }
                                                 />
                                                 <label htmlFor={option} className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                    {option}
+                                                    {capitalize(option)}
                                                 </label>
                                             </div>
                                         ))
@@ -390,7 +393,8 @@ const ProductAdminPage:NextPage<Props> = ({ product }) => {
                                                 <div>
                                                     <button
                                                         type='button'
-                                                        className='w-full rounded-b-lg uppercase p-2 bg-transparent hover:bg-red-400 text-red-700 font-semibold'
+                                                        data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                                                        className='w-full rounded-b-lg uppercase p-2  bg-red-200 hover:border-b-2 hover:border-x-2 hover:border-red-500 text-red-700 font-semibold'
                                                         onClick={() => onDeleteImage(img)}
                                                     >
                                                         borrar

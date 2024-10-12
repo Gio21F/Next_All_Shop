@@ -22,7 +22,7 @@ const CartPage = () => {
             <h1 className='text-3xl font-bold pb-5 text-black dark:text-white'>Carrito</h1>
             <div className='h-full grid lg:grid-cols-2 grid-cols-1 gap-4 text-black dark:text-white'>
                 {/* Products */}
-                <div className='h-[400px] lg:h-[500px] overflow-y-auto'>
+                <div className='h-[400px] lg:h-[550px] overflow-y-auto'>
                     <CartList editable />
                 </div>
                 {/* Order */}

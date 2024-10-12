@@ -41,7 +41,7 @@ const SummaryPage = () => {
     const { firstName, lastName, address, address2 = '', city, country, phone, zip } = shippingAddress;
 
   return (
-    <ShopLayout title='Resumen de orden' pageDescription={'Resumen de la orden'}>
+    <ShopLayout autoHeight={true} title='Resumen de orden' pageDescription={'Resumen de la orden'}>
 
     {
         (numberOfItems === 0) 

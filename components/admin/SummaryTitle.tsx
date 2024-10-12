@@ -8,7 +8,7 @@ interface Props {
 
 export const SummaryTile:FC<Props> = ({ title, subTitle, icon }) => {
   return (
-    <div className='flex gap-4 justify-center p-4 dark:shadow-white/15 shadow-md rounded-lg dark:text-white text-black'>
+    <div className='bg-white dark:bg-zinc-900 flex gap-4 justify-center p-4 shadow-md rounded-lg dark:text-white text-black'>
         { icon }
         <div className='flex flex-col ml-2'>
             <h3 className='text-sm'>{ title }</h3>

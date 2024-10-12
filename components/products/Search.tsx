@@ -32,14 +32,16 @@ export const Search = ({ term = '' }:Props) => {
                   
               />
               <button onClick={() => setIsActive(!isActive)}>
-                <MagnifyingGlassIcon className='mr-2 w-8 absolute top-1 right-0' />
+                <span className="sr-only">Search</span>
+                <MagnifyingGlassIcon className='mr-2 w-8 absolute top-1 right-0 text-black dark:text-white' />
               </button>
             </div>
           </>
         ) : (
           <div className='relative'>
             <button onClick={() => setIsActive(!isActive)}>
-              <MagnifyingGlassIcon className='mr-2 w-8 absolute top-1 right-0 text-white' />
+              <span className="sr-only">Search</span>
+              <MagnifyingGlassIcon className='mr-2 w-8 absolute top-1 right-0 text-black dark:text-white' />
             </button>
           </div>
         )

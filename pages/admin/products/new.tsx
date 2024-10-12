@@ -104,7 +104,6 @@ const ProductAdminPage:NextPage<Props> = ({ product, isNew }) => {
         }
         setIsSaving(true);
         try {
-            console.log('enviando seleccion')
             const formData = new FormData();
             selectedFiles.forEach((image: File) => {
                 formData.append('images', image);

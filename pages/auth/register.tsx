@@ -1,8 +1,7 @@
-import { GetServerSideProps } from 'next'
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getSession, signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts'

@@ -15,7 +15,8 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
-    },    
+    },
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         Credentials({
             name: 'credentials',
@@ -49,11 +50,6 @@ export const authOptions: NextAuthOptions = {
             },
         })
     ],
-    
-    pages: {
-        signIn: "/auth/login",
-        newUser: "/auth/register",
-    },
     callbacks: {
         jwt({ token, account, user }:any){
             if ( account ) {

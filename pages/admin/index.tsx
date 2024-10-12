@@ -24,14 +24,6 @@ const DashboardPage = () => {
         return () => clearInterval(interval)
       }, []);
 
-    // if ( !error && !data ) {
-    //     return <></>
-    // }
-
-    // if ( error ){
-    //     console.log(error);
-    //     return <Typography>Error al cargar la información</Typography>
-    // }
     if ( !data && !error ) return (
         <AdminLayout 
         title={`Error`} 

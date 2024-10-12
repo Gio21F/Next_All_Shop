@@ -22,7 +22,6 @@ const Account = () => {
             <FullScreenLoading />
         </ShopLayout>
     )
-    console.log(session?.user)
     return (
         <ShopLayout title='Cuenta' pageDescription=''>
             <div className='p-4 pt-14 space-y-5 flex flex-col w-full'>

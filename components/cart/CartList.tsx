@@ -8,10 +8,9 @@ import { ICartProduct, IOrderItem } from '../../interfaces';
 
 interface Props {
     editable?: boolean;
-    products?: IOrderItem[];
 }
 
-export const CartList: FC<Props> = ({ editable = false, products }) => {
+export const CartList: FC<Props> = ({ editable = false }) => {
 
     const { cart, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
@@ -20,8 +19,7 @@ export const CartList: FC<Props> = ({ editable = false, products }) => {
         updateCartQuantity( product );
     }
 
-    const productsToShow = products ? products : cart;
-
+    const productsToShow = cart;
 
     return (
         <>

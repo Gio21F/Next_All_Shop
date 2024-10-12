@@ -26,11 +26,22 @@ export const authOptions: NextAuthOptions = {
             authorize: async (credentials) => {
                 if (!credentials) return null;
                 try {
-                    const response = await axiosInstance.post('/auth/login', {
-                        email: credentials.email,
-                        password: credentials.password
-                    })
-                    return response.data
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_NEST_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                          email: credentials.email,
+                          password: credentials.password
+                        })
+                    });
+                    if (!response.ok) {
+                        // console.error("Error de autenticación:", response.statusText);
+                        return null;
+                    }
+                    const data = await response.json();
+                    return data;
                 } catch (error) {
                     console.log(error)
                     return null;

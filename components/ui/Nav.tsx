@@ -24,6 +24,7 @@ export const Nav = () => {
     const { numberOfItems } = useContext( CartContext );
     const { theme, toggleTheme } = useContext( UiContext );
     const { isLoggedIn, user, logout } = useContext(AuthContext);
+    console.log(user)
     return (
         <Disclosure as="nav" className="bg-white dark:bg-zinc-900">
             <div className="mx-auto max-w-8xl px-2 sm:px-6 lg:px-8">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
@@ -25,12 +25,34 @@ const RegisterPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [ showError, setShowError ] = useState(false);
     const [ isFetching, setIsFetching ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState('');
-    const { data: session, status } = useSession();
+    const [ errorMessage, setErrorMessage ] = useState<string|''>();
+    const { isLoggedIn, registerUser, user } = useContext(AuthContext);
+    // const { data: session, status } = useSession();
+
+    // useEffect(() => {
+    //     if (status === 'loading') return;
+    //     if (session?.user) {
+    //         let destination = '/';
+    //         if (router.query.callbackUrl) {
+    //             const callbackUrl = router.query.callbackUrl as string;
+    //             const url = new URL(callbackUrl);
+    //             destination = url.pathname + url.search;
+    //         }
+    //         else if (router.query.p) {
+    //             destination = router.query.p as string;
+    //         }
+    //         router.push(destination);
+    //     }
+    // }, [session, status]);
+
+    // if (status === 'loading' || session?.user) return (
+    //     <AuthLayout title='Registro'>
+    //         <FullScreenLoading />
+    //     </AuthLayout>
+    // )
 
     useEffect(() => {
-        if (status === 'loading') return;
-        if (session?.user) {
+        if (isLoggedIn && user) {
             let destination = '/';
             if (router.query.callbackUrl) {
                 const callbackUrl = router.query.callbackUrl as string;
@@ -42,36 +64,38 @@ const RegisterPage = () => {
             }
             router.push(destination);
         }
-    }, [session, status]);
-
-    if (status === 'loading' || session?.user) return (
-        <AuthLayout title='Registro'>
-            <FullScreenLoading />
-        </AuthLayout>
-    )
+    }, [ isLoggedIn, user ])
 
     const onRegisterForm = async( form: FormData ) => {
         setShowError(false);
         setIsFetching(true);
-        try {
-            const { data, status } = await shopApi.post('/auth/register', form)
-            if ( status == 201 ){
-                signIn('credentials', { email: data.email, password: form.password, redirect: false })
-                    .then((response:any) => {
-                        if(response.status !== 200){
-                            setShowError(true)
-                            setTimeout(() => setShowError(false), 3000 )
-                        }
-                    });
-            }
-        } catch (error) {
-            setShowError(true);
+        const { hasError, message } = await registerUser( form.fullName, form.email, form.password );
+        if(hasError) {
+            setShowError(true)
+            setErrorMessage(message);
+            setTimeout(() => setShowError(false), 5000 )
             setIsFetching(false)
-            console.log(error)
-            setErrorMessage( 'Usuario ya registrado');
-            setTimeout(() => setShowError(false), 3000);
             return;
         }
+        // try {
+        //     const { data, status } = await shopApi.post('/auth/register', form)
+        //     if ( status == 201 ){
+        //         signIn('credentials', { email: data.email, password: form.password, redirect: false })
+        //             .then((response:any) => {
+        //                 if(response.status !== 200){
+        //                     setShowError(true)
+        //                     setTimeout(() => setShowError(false), 3000 )
+        //                 }
+        //             });
+        //     }
+        // } catch (error) {
+        //     setShowError(true);
+        //     setIsFetching(false)
+        //     console.log(error)
+        //     setErrorMessage( 'Usuario ya registrado');
+        //     setTimeout(() => setShowError(false), 3000);
+        //     return;
+        // }
     }
 
     return (

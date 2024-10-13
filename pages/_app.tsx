@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app';
 import { SessionProvider } from "next-auth/react"
 import { SWRConfig } from 'swr';
 import { AuthProvider, CartProvider, UiProvider } from '../context';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { SnackbarProvider } from 'notistack';
 import NextNProgress from "nextjs-progressbar";
 

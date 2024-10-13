@@ -1,10 +1,8 @@
 import { FC, useReducer, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { useSession, signOut } from 'next-auth/react'
-
+// import { useSession, signOut } from 'next-auth/react'
 import Cookies from 'js-cookie';
 import axios, { AxiosError } from 'axios';
-
 import { AuthContext, authReducer } from './';
 import { shopApi } from '../../api';
 import { IUser } from '../../interfaces';
@@ -26,32 +24,32 @@ const AUTH_INITIAL_STATE: AuthState = {
 export const AuthProvider:FC<Props> = ({ children }) => {
 
     const [state, dispatch] = useReducer( authReducer, AUTH_INITIAL_STATE );
-    const { data, status } = useSession();
+    // const { data, status } = useSession();
     const router = useRouter();
 
-    useEffect(() => {
-        if (status === 'authenticated') {
-            if(data.user?.token){
-                localStorage.setItem('token', data.user.token);
-                dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
-            }
-            else {
-                dispatch({ type: '[Auth] - Logout' })
-            }
-        }
-    }, [data, status]);
+    // useEffect(() => {
+    //     if (status === 'authenticated') {
+    //         if(data.user?.token){
+    //             localStorage.setItem('token', data.user.token);
+    //             dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+    //         }
+    //         else {
+    //             dispatch({ type: '[Auth] - Logout' })
+    //         }
+    //     }
+    // }, [data, status]);
 
     // Basar en autenticación personalizada
-    // useEffect(() => {
-    //     checkToken();
-    // }, [])
+    useEffect(() => {
+        checkToken();
+    }, [])
 
     const checkToken = async() => {
-        console.log('Checking token');
+        // console.log('Checking token');
         if ( !Cookies.get('token') ) return;
         try {
             const { data } = await axiosInstance.get('/auth/check-status');
-            const { token, user } = data;
+            const { token, ...user } = data;
             Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
         } catch (error) {
@@ -60,11 +58,10 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     }
 
     const loginUser = async( email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
-
         try {
             const { data } = await axiosInstance.post('/auth/login', { email, password });
-            const { user } = data;
-            // Cookies.set('token', token );
+            const { token, ...user } = data;
+            Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
             return { hasError: false }
         } catch (error: any ) {
@@ -76,11 +73,11 @@ export const AuthProvider:FC<Props> = ({ children }) => {
 
     }
 
-    const registerUser = async( fullname: string, email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
+    const registerUser = async( fullName: string, email: string, password: string ): Promise<{hasError: boolean; message?: string}> => {
         try {
-            const { data } = await axiosInstance.post('/auth/register', { fullname, email, password });
-            const { token, user } = data;
-            // Cookies.set('token', token );
+            const { data } = await axiosInstance.post('/auth/register', { fullName, email, password });
+            const { token, ...user } = data;
+            Cookies.set('token', token );
             dispatch({ type: '[Auth] - Login', payload: user });
             return {
                 hasError: false
@@ -93,7 +90,6 @@ export const AuthProvider:FC<Props> = ({ children }) => {
                     message: error.response?.data.message
                 }
             }
-
             return {
                 hasError: true,
                 message: 'No se pudo crear el usuario - intente de nuevo'
@@ -111,12 +107,12 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         Cookies.remove('city')
         Cookies.remove('country')
         Cookies.remove('phone')
-        signOut();
-        localStorage.removeItem('token');
+        // signOut();
         dispatch({ type: '[Auth] - Logout' });
         // Para nuestra autenticacion personalizada
-        // Cookies.remove('token');
-        // router.reload();
+        localStorage.removeItem('token');
+        Cookies.remove('token');
+        router.reload();
 
     }
 

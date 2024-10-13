@@ -23,26 +23,11 @@ const LoginPage = () => {
     const { loginUser, user, isLoggedIn } = useContext( AuthContext );
     const [ showError, setShowError ] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const [ errorMessage, setErrorMessage ] = useState<string|''>();
     const [ isFetching, setIsFetching ] = useState(false);
-    const { data: session, status } = useSession();
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         let destination = '/';
-    //         if (router.query.callbackUrl) {
-    //             const callbackUrl = router.query.callbackUrl as string;
-    //             const url = new URL(callbackUrl);
-    //             destination = url.pathname + url.search;
-    //         }
-    //         else if (router.query.p) {
-    //             destination = router.query.p as string;
-    //         }
-    //         router.push(destination);
-    //     }
-    // })
-
+    // const { data: session, status } = useSession();
     useEffect(() => {
-        if (status === 'loading') return;
-        if (session?.user) {
+        if (isLoggedIn && user) {
             let destination = '/';
             if (router.query.callbackUrl) {
                 const callbackUrl = router.query.callbackUrl as string;
@@ -54,27 +39,51 @@ const LoginPage = () => {
             }
             router.push(destination);
         }
-    }, [session, status]);
+    }, [ isLoggedIn, user ])
+
+    // useEffect(() => {
+    //     if (status === 'loading') return;
+    //     if (session?.user) {
+    //         let destination = '/';
+    //         if (router.query.callbackUrl) {
+    //             const callbackUrl = router.query.callbackUrl as string;
+    //             const url = new URL(callbackUrl);
+    //             destination = url.pathname + url.search;
+    //         }
+    //         else if (router.query.p) {
+    //             destination = router.query.p as string;
+    //         }
+    //         router.push(destination);
+    //     }
+    // }, [session, status]);
 
     
-    if (status === 'loading' || session?.user) return (
-        <AuthLayout title='Inicio de sessión'>
-            <FullScreenLoading />
-        </AuthLayout>
-    )
+    // if (status === 'loading' || session?.user) return (
+    //     <AuthLayout title='Inicio de sessión'>
+    //         <FullScreenLoading />
+    //     </AuthLayout>
+    // )
 
     const onLoginUser = async( { email, password }: FormData ) => {
         setIsFetching(true);
-        signIn('credentials', { email, password, redirect: false })
-            .then((response:any) => {
-                if(response.status !== 200){
-                    setShowError(true)
-                    setTimeout(() => setShowError(false), 3000 )
-                }
-            }).catch((error) => {
-                console.log(error)
-                setIsFetching(false)
-            })
+        const { hasError, message } = await loginUser( email, password );
+        if(hasError) {
+            setShowError(true)
+            setErrorMessage(message);
+            setTimeout(() => setShowError(false), 5000 )
+            setIsFetching(false)
+            return;
+        }
+        // signIn('credentials', { email, password, redirect: false })
+        //     .then((response:any) => {
+        //         if(response.status !== 200){
+        //             setShowError(true)
+        //             setTimeout(() => setShowError(false), 3000 )
+        //         }
+        //     }).catch((error) => {
+        //         console.log(error)
+        //         setIsFetching(false)
+        //     })
     }
 
     return (
